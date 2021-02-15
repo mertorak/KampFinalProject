@@ -19,7 +19,7 @@ namespace Business.Concrete
         {
             _productDal = productDal;
         }
-
+        //aydogan pederli
         public IResult Add(Product product)
         {
             if (product.ProductName.Length<2)
