@@ -30,8 +30,8 @@ namespace WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddSingleton<IProductService,ProductManager>(); // IProductService istendiginde arka planda bir productmanager new 'i ver demek
-            services.AddSingleton<IProductDal, EfProductDal>();
+           // services.AddSingleton<IProductService,ProductManager>(); // IProductService istendiginde arka planda bir productmanager new 'i ver demek
+           //  services.AddSingleton<IProductDal, EfProductDal>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
