@@ -12,6 +12,7 @@ using Entities.DTOs;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Business.Concrete
@@ -31,11 +32,14 @@ namespace Business.Concrete
         public IResult Add(Product product)
         {
 
-            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success) { 
-                
-                _productDal.Add(product);
+            if (CheckIfProductCountOfCategoryCorrect(product.CategoryId).Success) {
 
-                return new SuccessResult(Messages.ProductAdded);
+                if (CheckIfProductNameExists(product.ProductName).Success)
+                {
+                    _productDal.Add(product);
+
+                    return new SuccessResult(Messages.ProductAdded);
+                }        
           }
 
             // ValidationTool.Validate(new ProductValidator(),product);
@@ -78,17 +82,33 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
-            _productDal.Update(product);
-            return new SuccessResult(Messages.ProductAdded);
-        }
-
-        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
-        {
-            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count;
+            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
 
             if (result >= 10)
             {
                 return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            throw new NotImplementedException();
+        }
+
+        private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
+        {
+            var result = _productDal.GetAll(p => p.CategoryId == categoryId).Count();
+
+            if (result>=10)
+            {
+                return new ErrorResult(Messages.ProductCountOfCategoryError);
+            }
+            return new SuccessResult();
+        }
+
+        private IResult CheckIfProductNameExists(string productName)
+        {
+            var result = _productDal.GetAll(p => p.ProductName == productName).Any();
+
+            if (result)
+            {
+                return new ErrorResult(Messages.ProductNameAlreadyExists);
             }
             return new SuccessResult();
         }
