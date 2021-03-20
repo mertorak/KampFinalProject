@@ -78,13 +78,8 @@ namespace Business.Concrete
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Update(Product product)
         {
-            var result = _productDal.GetAll(p => p.CategoryId == product.CategoryId).Count;
-
-            if (result >= 10)
-            {
-                return new ErrorResult(Messages.ProductCountOfCategoryError);
-            }
-            throw new NotImplementedException();
+            _productDal.Update(product);
+            return new SuccessResult(Messages.ProductAdded);
         }
 
         private IResult CheckIfProductCountOfCategoryCorrect(int categoryId)
